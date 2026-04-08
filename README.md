@@ -1,6 +1,6 @@
 # Cassava Leaf Disease Detection
 
-This project tracks a series of PyTorch experiments for 5-class cassava leaf disease classification. The notebooks progress from a baseline CNN to several ResNet18 and focal-loss training variants, and they expect the Kaggle competition dataset to be downloaded into the project root. The latest Kaggle submission notebook is configured to run without internet by loading the pretrained ResNet18 checkpoint from a local Kaggle input.
+This project tracks a series of PyTorch experiments for 5-class cassava leaf disease classification. The notebooks progress from a baseline CNN to several ResNet18 and focal-loss training variants, and they expect the Kaggle competition dataset to be downloaded into the project root. The latest staged fine-tuning notebook is configured to run without internet by loading the pretrained ResNet18 checkpoint from a local Kaggle input.
 
 ## Experiment change log
 
@@ -9,6 +9,7 @@ This project tracks a series of PyTorch experiments for 5-class cassava leaf dis
 - `ex3.ipynb` (`81d0058` and `5aadb40`, 2026-04-03): replaced the baseline CNN with a pretrained `ResNet18` backbone and trained that architecture with focal loss.
 - `ex4.ipynb` (`5da4e53`, 2026-04-03): expanded training with class-weighted focal loss, ImageNet normalization, heavier augmentation (`RandomHorizontalFlip`, `RandomRotation`, `ColorJitter`), and a `StepLR` scheduler.
 - `ex5.ipynb` (`27e7104`, 2026-04-03): fine-tuned the ResNet18 setup by reducing augmentation to horizontal flips only, changing focal loss to `gamma=1.0`, removing class weights, and lowering the learning rate to `3e-4`.
+- `ex8.ipynb` (local, 2026-04-08): restarts from the `ex5` ResNet18 baseline and adds staged fine-tuning with gradual unfreezing (`fc` -> `layer4` -> `layer3 + layer4`), per-stage learning rates, best-checkpoint restore, and validation tracking.
 
 ## Project layout
 
@@ -95,20 +96,20 @@ Expand-Archive -LiteralPath .\cassava-leaf-disease-classification\cassava-leaf-d
 jupyter lab
 ```
 
-Then open the notebook variant you want to run, starting with `ex1.ipynb` for the baseline or `ex5.ipynb` for the latest ResNet18 experiment.
+Then open the notebook variant you want to run, starting with `ex1.ipynb` for the baseline, `ex5.ipynb` for the clean ResNet18 restart point, or `ex8.ipynb` for the staged fine-tuning follow-up.
 
 ## 5. Kaggle offline ResNet18 setup
 
-If you want to submit `ex5.ipynb` to the Kaggle competition without enabling internet:
+If you want to submit `ex5.ipynb` or `ex8.ipynb` to the Kaggle competition without enabling internet:
 
 1. Download the official `resnet18-f37072fd.pth` checkpoint once outside the competition rerun.
 2. Upload that file as any Kaggle Dataset input.
-3. Attach the input to the notebook and manually set `WEIGHTS_PATH` in `ex5.ipynb` to the exact file location under `/kaggle/input/...`.
+3. Attach the input to the notebook and manually set `WEIGHTS_PATH` in the notebook you are running to the exact file location under `/kaggle/input/...`.
 4. Keep internet disabled in the Kaggle notebook settings and rerun all cells.
 
-## Latest notebook behavior (`ex5.ipynb`)
+## Latest notebook behavior (`ex8.ipynb`)
 
-The latest experiment currently:
+The latest staged fine-tuning experiment currently:
 
 - reads `cassava-leaf-disease-classification/train.csv`
 - reads `cassava-leaf-disease-classification/label_num_to_disease_map.json`
@@ -117,8 +118,10 @@ The latest experiment currently:
 - loads a pretrained `ResNet18` checkpoint from that local file instead of downloading weights during execution
 - keeps Kaggle internet access disabled for submission-safe reruns
 - trains with `FocalLoss(gamma=1.0)`
-- uses `Adam` with a learning rate of `3e-4`
+- fine-tunes the network in three stages: `fc` only, then `layer4 + fc`, then `layer3 + layer4 + fc`
+- uses per-stage `AdamW` parameter groups with smaller learning rates for deeper layers
 - applies resize and ImageNet normalization everywhere, with horizontal flip augmentation only on the training set
-- steps the learning rate with `torch.optim.lr_scheduler.StepLR`
+- tracks validation metrics per stage and restores the best validation checkpoint before inference
+- writes `best_resnet18_finetuned.pth` alongside `submission.csv`
 
-All notebooks use the same cassava dataset layout, so you can compare the experiment progression directly across `ex1.ipynb` through `ex5.ipynb`.
+`ex5.ipynb` remains the clean restart baseline, while `ex8.ipynb` is the next notebook to use when you want to test layer-wise fine-tuning. All notebooks use the same cassava dataset layout, so you can compare the experiment progression directly across `ex1.ipynb` through `ex8.ipynb`.

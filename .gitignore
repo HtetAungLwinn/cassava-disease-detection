@@ -9,3 +9,4 @@ venv/
 *.log
 *.pth
 *.pt
+cassava-leaf-disease-classification/*.zip

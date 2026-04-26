@@ -1,0 +1,11 @@
+{
+  "model_name": "ConvNeXt-Tiny",
+  "best_epoch": 4,
+  "best_val_accuracy": 87.71028037383178,
+  "validation_accuracy_from_predictions": 87.71028037383178,
+  "macro_f1": 0.7733072375819869,
+  "weighted_f1": 0.8752505244170736,
+  "num_validation_samples": 4280,
+  "num_correct_predictions": 3754,
+  "num_incorrect_predictions": 526
+}

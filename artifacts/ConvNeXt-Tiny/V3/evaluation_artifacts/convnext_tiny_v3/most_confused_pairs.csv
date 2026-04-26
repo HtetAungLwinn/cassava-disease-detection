@@ -1,0 +1,11 @@
+true_label,predicted_label,count
+Cassava Green Mottle (CGM),Cassava Mosaic Disease (CMD),78
+Cassava Bacterial Blight (CBB),Healthy,65
+Cassava Brown Streak Disease (CBSD),Healthy,64
+Cassava Green Mottle (CGM),Healthy,44
+Healthy,Cassava Bacterial Blight (CBB),35
+Healthy,Cassava Mosaic Disease (CMD),34
+Cassava Brown Streak Disease (CBSD),Cassava Mosaic Disease (CMD),29
+Healthy,Cassava Green Mottle (CGM),26
+Cassava Mosaic Disease (CMD),Healthy,23
+Cassava Mosaic Disease (CMD),Cassava Green Mottle (CGM),22

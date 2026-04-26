@@ -1,0 +1,13 @@
+{
+  "model_name": "ResNet18",
+  "best_epoch": 5,
+  "best_val_accuracy": 84.83644859813084,
+  "validation_accuracy_from_predictions": 84.83644859813084,
+  "macro_precision": 0.7667590469946404,
+  "macro_recall": 0.6986412243413743,
+  "macro_f1": 0.7228464931315108,
+  "weighted_f1": 0.8440051468369868,
+  "num_validation_samples": 4280,
+  "num_correct_predictions": 3631,
+  "num_incorrect_predictions": 649
+}
